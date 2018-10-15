@@ -81,16 +81,15 @@ Resources:
                           containerInstance=container_instance_arn,
                           force=True
                       )
-                      return res
+                      logger.info(res)
                   else:
-                      return {'meesage': '{0} is not used as ECS Container Instance'.format(instance_id)}
+                      logger.warning('{0} is not used as ECS Container Instance'.format(instance_id))
 
 
           def handler(event, context):
               instance_id = event['detail']['instance-id']
               ecs = ECS(region)
-              res = ecs.deregister(instance_id)
-              logger.info(res)
+              ecs.deregister(instance_id)
 
       Runtime: "python3.6"
       Timeout: "10"
