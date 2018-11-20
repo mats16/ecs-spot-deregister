@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
-Description: 'Spot instances auto-deregister from ECS cluster'
+Description: 'EC2 Spot Instances auto-deregister from ECS cluster'
 
 Resources:
   EventRule:
@@ -62,7 +62,8 @@ Resources:
               def deregister(self, instance_id):
                   container_instance_arn = None  # default
                   cluster_arns = self.get_cluster_arns()
-                  logger.info('ECS Clusters: {0}'.format(cluster_arns))
+                  logger.info('Get all ecs clusters)
+
                   for cluster_arn in cluster_arns:
                       res = self.cl.list_container_instances(
                           cluster=cluster_arn,
@@ -71,10 +72,9 @@ Resources:
                       )
                       if len(res['containerInstanceArns']) == 1:
                           container_instance_arn = res['containerInstanceArns'][0]
-                          logger.info('Target ECS Cluster: {0}'.format(cluster_arn))
-                          logger.info('Target ECS Instance: {0}'.format(container_instance_arn))
+                          logger.info('{0} is used in {0}'.format(instance_id, cluster_arn))
                       else:
-                          logger.info('{0} is not in {1}'.format(instance_id, cluster_arn))
+                          logger.debug('{0} is not used in {1}'.format(instance_id, cluster_arn))
                   if container_instance_arn:
                       res = self.cl.deregister_container_instance(
                           cluster=cluster_arn,
@@ -83,11 +83,12 @@ Resources:
                       )
                       logger.info(res)
                   else:
-                      logger.warning('{0} is not used as ECS Container Instance'.format(instance_id))
+                      logger.warning('{0} is not used in all ecs clusters'.format(instance_id))
 
 
           def handler(event, context):
               instance_id = event['detail']['instance-id']
+              logger.info('{0} will be terminated in 2 minutes'.format(instance_id))
               ecs = ECS(region)
               ecs.deregister(instance_id)
 
