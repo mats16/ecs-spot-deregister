@@ -1,3 +1,5 @@
+※ This project is moved to [awslabs/ec2-spot-labs](https://github.com/awslabs/ec2-spot-labs/tree/master/ecs-ec2-spot-auto-deregister).
+
 # Auto Deregistration EC2 Spot Instances from ECS Cluster
 
 Example AWS CloudFormation template for deregistration from Amazon ECS Cluster for Amazon EC2 Spot Instances via Amazon CloudWatch Events & AWS Lambda.
